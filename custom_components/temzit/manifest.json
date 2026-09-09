@@ -4,10 +4,10 @@
   "codeowners": [],
   "config_flow": true,
   "dependencies": [],
-  "documentation": "https://github.com/artist/ha-temzit",
+  "documentation": "https://github.com/fireya/ha-temzit",
   "integration_type": "device",
   "iot_class": "local_polling",
-  "issue_tracker": "https://github.com/artist/ha-temzit/issues",
+  "issue_tracker": "https://github.com/fireya/ha-temzit/issues",
   "loggers": ["temzit"],
   "requirements": [],
   "version": "0.1.0"
