@@ -1,0 +1,78 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Temzit Hydromodule",
+        "description": "Enter the IP address (or hostname) and TCP port of the hydromodule.",
+        "data": {
+          "host": "Host",
+          "port": "Port"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Cannot connect to the device"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "t_outdoor": { "name": "Outdoor temperature" },
+      "t_home": { "name": "Indoor temperature" },
+      "t_supply": { "name": "Supply temperature" },
+      "t_return": { "name": "Return temperature" },
+      "t_freon_gas": { "name": "Freon (gas)" },
+      "t_freon_liquid": { "name": "Freon (liquid)" },
+      "t_gws": { "name": "Hot water temperature" },
+      "flow": { "name": "Flow rate" },
+      "compressor1": { "name": "Compressor 1" },
+      "compressor2": { "name": "Compressor 2" },
+      "power": { "name": "Power consumption" },
+      "state": {
+        "name": "State",
+        "state": {
+          "0": "Off",
+          "1": "Heating",
+          "2": "Fast heating",
+          "3": "TEN only",
+          "4": "Cooling",
+          "5": "GWS only"
+        }
+      },
+      "sched_no": { "name": "Schedule number" },
+      "firmware": { "name": "Firmware version" },
+      "active_schedule": { "name": "Active schedule" },
+      "sched_active": {
+        "name": "Active schedule mode",
+        "state": {
+          "0": "Off",
+          "1": "Heating",
+          "2": "Fast heating",
+          "3": "TEN only",
+          "4": "Cooling",
+          "5": "GWS only"
+        }
+      },
+      "sch_t_home": { "name": "Room temp (schedule)" },
+      "sch_t_water": { "name": "Water temp (schedule)" },
+      "sch_t_gws": { "name": "GWS temp (schedule)" },
+      "sch_kkb_limit": { "name": "KKb power limit" },
+      "sch_ten_mode": { "name": "TEN mode" },
+      "sch_gws_mode": {
+        "name": "GWS mode",
+        "state": {
+          "0": "Auto",
+          "1": "Forced"
+        }
+      },
+      "output_power": { "name": "Output power" },
+      "cop": { "name": "COP" }
+    },
+    "binary_sensor": {
+      "ten_state": { "name": "TEN (electric heater)" },
+      "bkn_heater": { "name": "BKN heater" }
+    },
+    "time": {
+      "clock": { "name": "Device clock" }
+    }
+  }
+}
