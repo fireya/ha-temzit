@@ -30,7 +30,7 @@ class TemzitCoordinator(DataUpdateCoordinator[ActualState]):
         )
         self.client = client
 
-    async def _async_update(self) -> ActualState:
+    async def _async_update_data(self) -> ActualState:
         try:
             return await self.client.get_actual_state()
         except TemzitError as err:
