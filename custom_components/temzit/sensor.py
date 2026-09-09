@@ -192,14 +192,12 @@ SENSORS: tuple[TemzitSensor, ...] = (
         key="sch_kkb_limit",
         translation_key="sch_kkb_limit",
         native_unit_of_measurement="%",
-        device_class=SensorDeviceClass.PERCENTAGE,
         getter=_kkb,
     ),
     TemzitSensor(
         key="sch_ten_mode",
         translation_key="sch_ten_mode",
         native_unit_of_measurement="%",
-        device_class=SensorDeviceClass.PERCENTAGE,
         getter=_ten,
     ),
     TemzitSensor(
