@@ -13,6 +13,7 @@ from homeassistant.components.binary_sensor import (
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .client import ActualState
 from .const import CONF_HOST, CONF_PORT, DEFAULT_PORT, DOMAIN
@@ -55,7 +56,7 @@ async def async_setup_entry(
     )
 
 
-class TemzitBinarySensorEntity(BinarySensorEntity):
+class TemzitBinarySensorEntity(CoordinatorEntity, BinarySensorEntity):
     """A single Temzit binary sensor bound to the coordinator."""
 
     def __init__(
@@ -65,12 +66,11 @@ class TemzitBinarySensorEntity(BinarySensorEntity):
         unique_id: str,
         entry: ConfigEntry,
     ) -> None:
-        self.coordinator = coordinator
+        super().__init__(coordinator)
         self._desc = desc
         self._entry = entry
         self._attr_unique_id = unique_id
         self._attr_translation_key = desc.translation_key
-        self._attr_should_poll = False
 
     @property
     def is_on(self) -> bool | None:

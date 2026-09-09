@@ -8,6 +8,7 @@ from homeassistant.components.time import TimeEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .client import ActualState
 from .const import CONF_HOST, CONF_PORT, DEFAULT_PORT, DOMAIN
@@ -26,15 +27,14 @@ async def async_setup_entry(
     async_add_entities([TemzitTimeEntity(coordinator, f"{host}:clock", entry)])
 
 
-class TemzitTimeEntity(TimeEntity):
+class TemzitTimeEntity(CoordinatorEntity, TimeEntity):
     """Expose the hydromodule's internal clock as a time entity."""
 
     def __init__(self, coordinator, unique_id: str, entry: ConfigEntry) -> None:
-        self.coordinator = coordinator
+        super().__init__(coordinator)
         self._entry = entry
         self._attr_unique_id = unique_id
         self._attr_translation_key = "clock"
-        self._attr_should_poll = False
 
     @property
     def now(self) -> dt_time | None:

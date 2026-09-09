@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from datetime import timedelta
+import logging
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -10,6 +11,8 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 
 from .client import ActualState, TemzitClient, TemzitError
 from .const import DOMAIN, SCAN_INTERVAL_SECONDS
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class TemzitCoordinator(DataUpdateCoordinator[ActualState]):
@@ -20,7 +23,7 @@ class TemzitCoordinator(DataUpdateCoordinator[ActualState]):
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry, client: TemzitClient) -> None:
         super().__init__(
             hass,
-            __name__,
+            _LOGGER,
             name=f"{DOMAIN}_{entry.entry_id}",
             config_entry=entry,
             update_interval=timedelta(seconds=SCAN_INTERVAL_SECONDS),

@@ -15,6 +15,7 @@ from homeassistant.components.sensor import (
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .client import ActualState
 from .const import (
@@ -242,7 +243,7 @@ async def async_setup_entry(
     async_add_entities(entities)
 
 
-class TemzitSensorEntity(SensorEntity):
+class TemzitSensorEntity(CoordinatorEntity, SensorEntity):
     """A single Temzit sensor bound to the coordinator."""
 
     def __init__(
@@ -252,7 +253,7 @@ class TemzitSensorEntity(SensorEntity):
         unique_id: str,
         entry: ConfigEntry,
     ) -> None:
-        self.coordinator = coordinator
+        super().__init__(coordinator)
         self._desc = desc
         self._entry = entry
         self._attr_unique_id = unique_id
@@ -260,7 +261,6 @@ class TemzitSensorEntity(SensorEntity):
         self._attr_native_unit_of_measurement = desc.native_unit_of_measurement
         self._attr_device_class = desc.device_class
         self._attr_state_class = desc.state_class
-        self._attr_should_poll = False
 
     @property
     def native_value(self) -> Any:
