@@ -16,7 +16,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .client import ActualState
-from .const import CONF_HOST, CONF_PORT, DEFAULT_PORT, DOMAIN
+from .const import CONF_HOST, CONF_PORT, DEFAULT_PORT, DOMAIN, MANUFACTURER, MODEL
 
 
 @dataclass(frozen=True)
@@ -70,6 +70,7 @@ class TemzitBinarySensorEntity(CoordinatorEntity, BinarySensorEntity):
         self._desc = desc
         self._entry = entry
         self._attr_unique_id = unique_id
+        self._attr_has_entity_name = True
         self._attr_translation_key = desc.translation_key
 
     @property
@@ -79,4 +80,9 @@ class TemzitBinarySensorEntity(CoordinatorEntity, BinarySensorEntity):
 
     @property
     def device_info(self) -> dict:
-        return {"identifiers": {(DOMAIN, _device_id(self._entry))}}
+        return {
+            "identifiers": {(DOMAIN, _device_id(self._entry))},
+            "name": self._entry.data[CONF_HOST],
+            "manufacturer": MANUFACTURER,
+            "model": MODEL,
+        }

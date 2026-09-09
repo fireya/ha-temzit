@@ -11,7 +11,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .client import ActualState
-from .const import CONF_HOST, CONF_PORT, DEFAULT_PORT, DOMAIN
+from .const import CONF_HOST, CONF_PORT, DEFAULT_PORT, DOMAIN, MANUFACTURER, MODEL
 
 
 def _device_id(entry: ConfigEntry) -> str:
@@ -34,6 +34,7 @@ class TemzitTimeEntity(CoordinatorEntity, TimeEntity):
         super().__init__(coordinator)
         self._entry = entry
         self._attr_unique_id = unique_id
+        self._attr_has_entity_name = True
         self._attr_translation_key = "clock"
 
     @property
@@ -43,4 +44,9 @@ class TemzitTimeEntity(CoordinatorEntity, TimeEntity):
 
     @property
     def device_info(self) -> dict:
-        return {"identifiers": {(DOMAIN, _device_id(self._entry))}}
+        return {
+            "identifiers": {(DOMAIN, _device_id(self._entry))},
+            "name": self._entry.data[CONF_HOST],
+            "manufacturer": MANUFACTURER,
+            "model": MODEL,
+        }

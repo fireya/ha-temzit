@@ -24,6 +24,8 @@ from .const import (
     DEFAULT_PORT,
     DOMAIN,
     GWS_MODE_NAMES,
+    MANUFACTURER,
+    MODEL,
     STATE_NAMES,
     kkb_limit_percent,
     ten_mode_percent,
@@ -255,6 +257,7 @@ class TemzitSensorEntity(CoordinatorEntity, SensorEntity):
         self._desc = desc
         self._entry = entry
         self._attr_unique_id = unique_id
+        self._attr_has_entity_name = True
         self._attr_translation_key = desc.translation_key
         self._attr_native_unit_of_measurement = desc.native_unit_of_measurement
         self._attr_device_class = desc.device_class
@@ -269,4 +272,7 @@ class TemzitSensorEntity(CoordinatorEntity, SensorEntity):
     def device_info(self) -> dict:
         return {
             "identifiers": {(DOMAIN, _device_id(self._entry))},
+            "name": self._entry.data[CONF_HOST],
+            "manufacturer": MANUFACTURER,
+            "model": MODEL,
         }
