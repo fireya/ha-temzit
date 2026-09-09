@@ -37,7 +37,7 @@ class TemzitTimeEntity(CoordinatorEntity, TimeEntity):
         self._attr_translation_key = "clock"
 
     @property
-    def now(self) -> dt_time | None:
+    def native_value(self) -> dt_time | None:
         state: ActualState = self.coordinator.data
         return dt_time(state.hour, state.minute, state.second)
 

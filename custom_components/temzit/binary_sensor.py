@@ -7,8 +7,8 @@ from operator import attrgetter
 from typing import Any, Callable
 
 from homeassistant.components.binary_sensor import (
-    BinaryEntityDescription,
     BinarySensorEntity,
+    BinarySensorEntityDescription,
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -20,7 +20,7 @@ from .const import CONF_HOST, CONF_PORT, DEFAULT_PORT, DOMAIN
 
 
 @dataclass(frozen=True)
-class TemzitBinarySensor(BinaryEntityDescription):
+class TemzitBinarySensor(BinarySensorEntityDescription):
     """A Temzit binary sensor definition."""
 
     getter: Callable[[ActualState], Any] | None = None
