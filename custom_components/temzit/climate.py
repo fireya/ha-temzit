@@ -107,6 +107,33 @@ class TemzitClimate(CoordinatorEntity, ClimateEntity):
         }
         if s.state in (STATE_GWS_HEATING, STATE_GWS_ONLY):
             attrs["preset_mode"] = CLIMATE_PRESET_GWS
+        cfg: DeviceConfig | None = None
+        if self._config_coordinator is not None and self._config_coordinator.data is not None:
+            cfg = self._config_coordinator.data
+        if cfg is not None:
+            attrs["cfg_mode"] = cfg.mode
+            attrs["cfg_t_home"] = cfg.t_home
+            attrs["cfg_t_water"] = cfg.t_water
+            attrs["cfg_inertia_home"] = cfg.inertia_home
+            attrs["cfg_ten_mode"] = cfg.ten_mode
+            attrs["cfg_t_outdoor_ten_start"] = cfg.t_outdoor_ten_start
+            attrs["cfg_t_min_kkb"] = cfg.t_min_kkb
+            attrs["cfg_disinfection"] = cfg.disinfection
+            attrs["cfg_gws_mode"] = cfg.gws_mode
+            attrs["cfg_t_gws"] = cfg.t_gws
+            attrs["cfg_ext_boiler_mode"] = cfg.ext_boiler_mode
+            attrs["cfg_kkb_power_limit"] = cfg.kkb_power_limit
+            attrs["cfg_meter_pulses"] = cfg.meter_pulses
+            attrs["cfg_weather_compensation"] = cfg.weather_compensation
+            attrs["cfg_collector_off"] = cfg.collector_off
+            attrs["cfg_collector_on"] = cfg.collector_on
+            attrs["cfg_cn_relay_mode"] = cfg.cn_relay_mode
+            attrs["cfg_t_gws_max_kkb"] = cfg.t_gws_max_kkb
+            attrs["cfg_flowmeter_type"] = cfg.flowmeter_type
+            attrs["cfg_overheat_action"] = cfg.overheat_action
+            attrs["cfg_sc_mode"] = cfg.sc_mode
+            attrs["cfg_overheat_t"] = cfg.overheat_t
+            attrs["cfg_kkb1_type"] = cfg.kkb1_type
         return attrs
 
     @property
