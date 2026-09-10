@@ -73,6 +73,36 @@
     },
     "time": {
       "clock": { "name": "Часы устройства" }
+    },
+    "climate": {
+      "climate": {
+        "name": "Климат-тёплый пол",
+        "state_attributes": {
+          "hvac_mode": {
+            "state": {
+              "off": "Выкл",
+              "heat": "Нагрев",
+              "cool": "Охлаждение"
+            }
+          },
+          "preset_mode": {
+            "state": {
+              "gws": "Занят ГВС"
+            }
+          }
+        }
+      }
+    },
+    "water_heater": {
+      "water_heater": {
+        "name": "Водонагреватель=ГВС",
+        "state": {
+          "off": "Выкл",
+          "compressor": "Компрессор",
+          "ten": "ТЭН",
+          "compressor+ten": "Компрессор+ТЭН"
+        }
+      }
     }
   }
 }

@@ -132,7 +132,7 @@ async def run() -> None:
     for s in sorted(states, key=lambda x: x.entity_id):
         print("  ", s.entity_id, "=", s.state)
 
-    expected = 24 + 2 + 1  # sensors + binary sensors + time
+    expected = 24 + 2 + 1 + 1 + 1  # sensors + binary sensors + time + climate + water_heater
     if not ok or len(states) != expected:
         raise SystemExit(f"FAIL: ok={ok}, states={len(states)}, expected={expected}")
     print(f"OK: integration set up, {expected} entities registered")

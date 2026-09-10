@@ -12,7 +12,7 @@ SCAN_INTERVAL_SECONDS = 15
 MAX_RETRIES = 5
 RETRY_DELAY_SECONDS = 15
 
-PLATFORMS = ["sensor", "binary_sensor", "time"]
+PLATFORMS = ["sensor", "binary_sensor", "time", "climate", "water_heater"]
 
 # Water physical constants for calculated fields.
 WATER_CP = 4186.0  # J/(kg*K)
@@ -32,6 +32,10 @@ STATE_FAST_HEATING = 2
 STATE_TEN_ONLY = 3
 STATE_COOLING = 4
 STATE_GWS_ONLY = 5
+STATE_GWS_HEATING = 101
+
+# States that mean the unit is busy heating the GWS (hot water) loop.
+GWS_STATES = {STATE_GWS_HEATING, STATE_GWS_ONLY}
 
 STATE_NAMES = {
     0: "off",
@@ -40,7 +44,18 @@ STATE_NAMES = {
     3: "ten_only",
     4: "cooling",
     5: "gws_only",
+    101: "gws_heating",
 }
+
+# Climate preset used to flag that the unit is busy with GWS (not off/idle).
+CLIMATE_PRESET_GWS = "gws"
+
+# Water heater operational modes (display strings, localized via translations).
+WH_MODE_OFF = "off"
+WH_MODE_COMPRESSOR = "compressor"
+WH_MODE_TEN = "ten"
+WH_MODE_COMPRESSOR_TEN = "compressor+ten"
+WH_MODES = [WH_MODE_OFF, WH_MODE_COMPRESSOR, WH_MODE_TEN, WH_MODE_COMPRESSOR_TEN]
 
 # GWS (hot water) mode, field 25.
 GWS_MODE_AUTO = 0
