@@ -77,14 +77,14 @@ class TemzitClimate(CoordinatorEntity, ClimateEntity):
         s: ActualState = self.coordinator.data
         if s.state == STATE_OFF:
             return HVACMode.OFF
-        if s.state == STATE_COOLING:
-            return HVACMode.COOL
-        return HVACMode.HEAT
+        if s.compressor1 > 0:
+            return HVACMode.HEAT
+        return HVACMode.OFF
 
     @property
     def hvac_action(self) -> HVACAction:
         s: ActualState = self.coordinator.data
-        if s.state == STATE_OFF:
+        if s.state == STATE_OFF or s.compressor1 == 0:
             return HVACAction.OFF
         if s.state == STATE_COOLING:
             return HVACAction.COOLING
@@ -96,6 +96,15 @@ class TemzitClimate(CoordinatorEntity, ClimateEntity):
         if s.state in (STATE_GWS_HEATING, STATE_GWS_ONLY):
             return CLIMATE_PRESET_GWS
         return None
+
+    @property
+    def extra_state_attributes(self) -> dict:
+        s: ActualState = self.coordinator.data
+        return {
+            "power_w": s.power_w,
+            "cop": s.cop,
+            "flow_l_min": s.flow,
+        }
 
     @property
     def device_info(self) -> dict:
