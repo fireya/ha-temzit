@@ -27,13 +27,19 @@ class TemzitCoordinator(DataUpdateCoordinator[ActualState]):
 
     config_entry: ConfigEntry
 
-    def __init__(self, hass: HomeAssistant, entry: ConfigEntry, client: TemzitClient) -> None:
+    def __init__(
+        self,
+        hass: HomeAssistant,
+        entry: ConfigEntry,
+        client: TemzitClient,
+        scan_interval: int = SCAN_INTERVAL_SECONDS,
+    ) -> None:
         super().__init__(
             hass,
             _LOGGER,
             name=f"{DOMAIN}_{entry.entry_id}",
             config_entry=entry,
-            update_interval=timedelta(seconds=SCAN_INTERVAL_SECONDS),
+            update_interval=timedelta(seconds=scan_interval),
         )
         self.client = client
 
@@ -62,13 +68,19 @@ class TemzitConfigCoordinator(DataUpdateCoordinator[DeviceConfig]):
 
     config_entry: ConfigEntry
 
-    def __init__(self, hass: HomeAssistant, entry: ConfigEntry, client: TemzitClient) -> None:
+    def __init__(
+        self,
+        hass: HomeAssistant,
+        entry: ConfigEntry,
+        client: TemzitClient,
+        scan_interval: int = CFG_SCAN_INTERVAL_SECONDS,
+    ) -> None:
         super().__init__(
             hass,
             _LOGGER,
             name=f"{DOMAIN}_config_{entry.entry_id}",
             config_entry=entry,
-            update_interval=timedelta(seconds=CFG_SCAN_INTERVAL_SECONDS),
+            update_interval=timedelta(seconds=scan_interval),
         )
         self.client = client
 
