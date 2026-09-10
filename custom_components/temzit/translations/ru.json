@@ -95,7 +95,7 @@
     },
     "water_heater": {
       "water_heater": {
-        "name": "Водонагреватель=ГВС",
+        "name": "ГВС",
         "state": {
           "off": "Выкл",
           "compressor": "Компрессор",

@@ -49,7 +49,9 @@ class TemzitClimate(CoordinatorEntity, ClimateEntity):
     _attr_has_entity_name = True
     _attr_translation_key = "climate"
     _attr_hvac_modes = [HVACMode.OFF, HVACMode.HEAT, HVACMode.COOL]
-    _attr_supported_features = ClimateEntityFeature.PRESET_MODE
+    _attr_supported_features = (
+        ClimateEntityFeature.TARGET_TEMPERATURE | ClimateEntityFeature.PRESET_MODE
+    )
     _attr_preset_modes = [CLIMATE_PRESET_GWS]
     _attr_min_temp = 0.0
     _attr_max_temp = 50.0

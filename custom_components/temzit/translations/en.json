@@ -95,7 +95,7 @@
     },
     "water_heater": {
       "water_heater": {
-        "name": "Water heater=GWS",
+        "name": "GWS",
         "state": {
           "off": "Off",
           "compressor": "Compressor",
