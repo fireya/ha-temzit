@@ -65,7 +65,9 @@
         }
       },
       "output_power": { "name": "Выходная мощность" },
-      "cop": { "name": "COP" }
+      "cop": { "name": "COP" },
+      "target_water": { "name": "Целевая Т° обратки (погодокомп.)" },
+      "weather_compensation": { "name": "Погодокомпенсация" }
     },
     "binary_sensor": {
       "ten_state": { "name": "ТЭН" },

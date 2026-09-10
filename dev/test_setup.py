@@ -109,6 +109,18 @@ async def run() -> None:
 
     CL.TemzitClient.get_actual_state = fake_get
 
+    cfg_frame = bytearray([0x02, 0x00]) + bytearray(60)
+    cfg_frame[2 + 1] = 16  # t_home
+    cfg_frame[2 + 2] = 30  # t_water
+    cfg_frame[2 + 18] = 2  # weather_compensation = 2 -> 0.2
+    cfg_frame += struct.pack("<H", sum(cfg_frame) & 0xFFFF)
+    cfg = CL.parse_config(bytes(cfg_frame))
+
+    async def fake_get_config(self):  # noqa: ANN001
+        return cfg
+
+    CL.TemzitClient.get_config = fake_get_config
+
     hass = HomeAssistant(str(ROOT))
     await hass.async_start()
     hass.config_entries = ConfigEntries(hass, {})
@@ -132,7 +144,7 @@ async def run() -> None:
     for s in sorted(states, key=lambda x: x.entity_id):
         print("  ", s.entity_id, "=", s.state)
 
-    expected = 24 + 2 + 1 + 1 + 1  # sensors + binary sensors + time + climate + water_heater
+    expected = 24 + 2 + 1 + 1 + 1 + 2  # sensors + binary + time + climate + wh + target_water + weather_comp
     if not ok or len(states) != expected:
         raise SystemExit(f"FAIL: ok={ok}, states={len(states)}, expected={expected}")
     print(f"OK: integration set up, {expected} entities registered")

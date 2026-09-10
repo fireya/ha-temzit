@@ -13,7 +13,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .client import ActualState
+from .client import ActualState, DeviceConfig
 from .const import (
     CLIMATE_PRESET_GWS,
     CONF_HOST,
@@ -38,8 +38,9 @@ async def async_setup_entry(
 ) -> None:
     """Set up the Temzit climate entity."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
+    config_coordinator = hass.data[DOMAIN].get("config")
     host = entry.data[CONF_HOST]
-    async_add_entities([TemzitClimate(coordinator, f"{host}:climate", entry)])
+    async_add_entities([TemzitClimate(coordinator, config_coordinator, f"{host}:climate", entry)])
 
 
 class TemzitClimate(CoordinatorEntity, ClimateEntity):
@@ -56,8 +57,9 @@ class TemzitClimate(CoordinatorEntity, ClimateEntity):
     _attr_precision = 0.1
     _attr_temperature_unit = "°C"
 
-    def __init__(self, coordinator, unique_id: str, entry: ConfigEntry) -> None:
+    def __init__(self, coordinator, config_coordinator, unique_id: str, entry: ConfigEntry) -> None:
         super().__init__(coordinator)
+        self._config_coordinator = config_coordinator
         self._entry = entry
         self._attr_unique_id = unique_id
 
@@ -67,7 +69,15 @@ class TemzitClimate(CoordinatorEntity, ClimateEntity):
 
     @property
     def target_temperature(self) -> float:
-        return round(float(self.coordinator.data.sch_t_water), 1)
+        s: ActualState = self.coordinator.data
+        base = float(s.sch_t_water)
+        cfg: DeviceConfig | None = None
+        if self._config_coordinator is not None and self._config_coordinator.data is not None:
+            cfg = self._config_coordinator.data
+        if cfg is not None and cfg.weather_compensation != 0:
+            comp = cfg.weather_compensation / 10.0
+            return round(base - comp * s.t_outdoor, 1)
+        return round(base, 1)
 
     @property
     def hvac_mode(self) -> HVACMode:

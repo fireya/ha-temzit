@@ -17,7 +17,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .client import ActualState
+from .client import ActualState, DeviceConfig
 from .const import (
     CONF_HOST,
     CONF_PORT,
@@ -237,6 +237,15 @@ SENSORS: tuple[TemzitSensor, ...] = (
 )
 
 
+def _calc_target_water(s: ActualState, cfg: DeviceConfig | None) -> float:
+    """Target return water temp with weather compensation applied."""
+    base = float(s.sch_t_water)
+    if cfg is None or cfg.weather_compensation == 0:
+        return round(base, 1)
+    comp = cfg.weather_compensation / 10.0
+    return round(base - comp * s.t_outdoor, 1)
+
+
 def _device_id(entry: ConfigEntry) -> str:
     return f"{entry.data[CONF_HOST]}:{entry.data.get(CONF_PORT, DEFAULT_PORT)}"
 
@@ -246,11 +255,19 @@ async def async_setup_entry(
 ) -> None:
     """Set up the Temzit sensors."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
+    config_coordinator = hass.data[DOMAIN].get("config")
     host = entry.data[CONF_HOST]
     entities: list[TemzitSensorEntity] = []
     for desc in SENSORS:
         entities.append(
             TemzitSensorEntity(coordinator, desc, f"{host}:{desc.key}", entry)
+        )
+    entities.append(
+        TemzitTargetWaterEntity(coordinator, config_coordinator, f"{host}:target_water", entry)
+    )
+    if config_coordinator is not None:
+        entities.append(
+            TemzitWeatherCompEntity(config_coordinator, f"{host}:weather_comp", entry)
         )
     async_add_entities(entities)
 
@@ -281,6 +298,68 @@ class TemzitSensorEntity(CoordinatorEntity, SensorEntity):
     def native_value(self) -> Any:
         state: ActualState = self.coordinator.data
         return self._desc.getter(state)
+
+    @property
+    def device_info(self) -> dict:
+        return {
+            "identifiers": {(DOMAIN, _device_id(self._entry))},
+            "name": self._entry.data[CONF_HOST],
+            "manufacturer": MANUFACTURER,
+            "model": MODEL,
+        }
+
+
+class TemzitTargetWaterEntity(CoordinatorEntity, SensorEntity):
+    """Target return water temp with weather compensation (from SYNC + CFG)."""
+
+    def __init__(self, coordinator, config_coordinator, unique_id: str, entry: ConfigEntry) -> None:
+        super().__init__(coordinator)
+        self._config_coordinator = config_coordinator
+        self._entry = entry
+        self._attr_unique_id = unique_id
+        self._attr_has_entity_name = True
+        self._attr_translation_key = "target_water"
+        self._attr_native_unit_of_measurement = C
+        self._attr_device_class = SensorDeviceClass.TEMPERATURE
+        self._attr_state_class = MEAS
+        self._attr_suggested_display_precision = 1
+
+    @property
+    def native_value(self) -> float:
+        state: ActualState = self.coordinator.data
+        cfg: DeviceConfig | None = None
+        if self._config_coordinator is not None and self._config_coordinator.data is not None:
+            cfg = self._config_coordinator.data
+        return _calc_target_water(state, cfg)
+
+    @property
+    def device_info(self) -> dict:
+        return {
+            "identifiers": {(DOMAIN, _device_id(self._entry))},
+            "name": self._entry.data[CONF_HOST],
+            "manufacturer": MANUFACTURER,
+            "model": MODEL,
+        }
+
+
+class TemzitWeatherCompEntity(CoordinatorEntity, SensorEntity):
+    """Weather compensation factor from device config (CFG)."""
+
+    def __init__(self, config_coordinator, unique_id: str, entry: ConfigEntry) -> None:
+        super().__init__(config_coordinator)
+        self._entry = entry
+        self._attr_unique_id = unique_id
+        self._attr_has_entity_name = True
+        self._attr_translation_key = "weather_compensation"
+        self._attr_state_class = MEAS
+        self._attr_suggested_display_precision = 1
+
+    @property
+    def native_value(self) -> float | None:
+        cfg: DeviceConfig | None = self.coordinator.data
+        if cfg is None:
+            return None
+        return cfg.weather_compensation / 10.0
 
     @property
     def device_info(self) -> dict:

@@ -8,6 +8,7 @@ CONF_HOST = "host"
 CONF_PORT = "port"
 DEFAULT_PORT = 333
 SCAN_INTERVAL_SECONDS = 30
+CFG_SCAN_INTERVAL_SECONDS = 600
 # Retry policy on poll failure (protocol: retry at 10-30s intervals, >=10s apart).
 MAX_RETRIES = 5
 RETRY_DELAY_SECONDS = 15

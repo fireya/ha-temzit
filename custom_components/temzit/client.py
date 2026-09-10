@@ -12,6 +12,8 @@ from homeassistant.exceptions import HomeAssistantError
 
 from .const import (
     CMD_ACTUAL_STATE,
+    CMD_CONFIG_MAIN,
+    CMD_REQCFG,
     CMD_SYNC,
     DEFAULT_PORT,
     WATER_CP,
@@ -145,6 +147,65 @@ def parse_actual_state(response: bytes) -> ActualState:
     )
 
 
+@dataclass
+class DeviceConfig:
+    """Parsed device configuration (CONFIG_MAIN response)."""
+
+    mode: int
+    t_home: int
+    t_water: int
+    inertia_home: int
+    ten_mode: int
+    t_outdoor_ten_start: int
+    t_min_kkb: int
+    disinfection: int
+    gws_mode: int
+    t_gws: int
+    ext_boiler_mode: int
+    kkb_power_limit: int
+    meter_pulses: int
+    weather_compensation: int
+    collector_off: int
+    collector_on: int
+    cn_relay_mode: int
+    t_gws_max_kkb: int
+    flowmeter_type: int
+    overheat_action: int
+    sc_mode: int
+    overheat_t: int
+    kkb1_type: int
+
+
+def parse_config(response: bytes) -> DeviceConfig:
+    """Parse a 64-byte CONFIG_MAIN response into a DeviceConfig."""
+    a = response[2:32]
+    return DeviceConfig(
+        mode=a[0],
+        t_home=a[1],
+        t_water=a[2],
+        inertia_home=a[3] >> 4,
+        ten_mode=a[3] & 0x0F,
+        t_outdoor_ten_start=a[4],
+        t_min_kkb=a[5],
+        disinfection=a[6] >> 4,
+        gws_mode=a[6] & 0x0F,
+        t_gws=a[7],
+        ext_boiler_mode=a[8],
+        kkb_power_limit=a[9],
+        meter_pulses=a[17],
+        weather_compensation=a[18],
+        collector_off=a[19] >> 4,
+        collector_on=a[19] & 0x0F,
+        cn_relay_mode=a[20],
+        t_gws_max_kkb=a[21],
+        flowmeter_type=a[22],
+        overheat_action=a[23] >> 3,
+        sc_mode=a[23] & 0x07,
+        overheat_t=a[24],
+        kkb1_type=a[25],
+    )
+
+
 class TemzitClient:
     """Minimal TCP client for the Temzit hydromodule (port 333)."""
 
@@ -168,12 +229,28 @@ class TemzitClient:
 
         return parse_actual_state(response)
 
-    async def _exchange(self, command: bytes, expected_length: int) -> bytes:
+    async def get_config(self) -> DeviceConfig:
+        """Send REQCFG and return the parsed device configuration."""
+        command = bytes([CMD_REQCFG, 0x00])
+        response = await self._exchange(command, 64, timeout=15)
+
+        if response[0] != CMD_CONFIG_MAIN:
+            raise TemzitError(
+                f"Expected CONFIG_MAIN (0x{CMD_CONFIG_MAIN:02X}), "
+                f"got 0x{response[0]:02X}"
+            )
+
+        if not _checksum_ok(response):
+            _LOGGER.warning("Checksum mismatch in CONFIG_MAIN response")
+
+        return parse_config(response)
+
+    async def _exchange(self, command: bytes, expected_length: int, timeout: float = 5) -> bytes:
         """Open a short-lived TCP connection, send a command, read the reply."""
         try:
             reader, writer = await asyncio.wait_for(
                 asyncio.open_connection(self.host, self.port),
-                timeout=5,
+                timeout=timeout,
             )
         except (asyncio.TimeoutError, OSError) as err:
             raise TemzitConnectionError(
@@ -185,7 +262,7 @@ class TemzitClient:
             await writer.drain()
             return await asyncio.wait_for(
                 reader.readexactly(expected_length),
-                timeout=5,
+                timeout=timeout,
             )
         except (asyncio.TimeoutError, asyncio.IncompleteReadError, OSError) as err:
             raise TemzitConnectionError(

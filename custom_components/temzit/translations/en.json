@@ -65,7 +65,9 @@
         }
       },
       "output_power": { "name": "Output power" },
-      "cop": { "name": "COP" }
+      "cop": { "name": "COP" },
+      "target_water": { "name": "Target return temp (weather comp.)" },
+      "weather_compensation": { "name": "Weather compensation" }
     },
     "binary_sensor": {
       "ten_state": { "name": "TEN (electric heater)" },
