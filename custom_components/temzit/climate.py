@@ -49,10 +49,7 @@ class TemzitClimate(CoordinatorEntity, ClimateEntity):
     _attr_has_entity_name = True
     _attr_translation_key = "climate"
     _attr_hvac_modes = [HVACMode.OFF, HVACMode.HEAT, HVACMode.COOL]
-    _attr_supported_features = (
-        ClimateEntityFeature.TARGET_TEMPERATURE | ClimateEntityFeature.PRESET_MODE
-    )
-    _attr_preset_modes = [CLIMATE_PRESET_GWS]
+    _attr_supported_features = ClimateEntityFeature.TARGET_TEMPERATURE
     _attr_min_temp = 0.0
     _attr_max_temp = 50.0
     _attr_target_temperature_step = 1.0
@@ -91,20 +88,16 @@ class TemzitClimate(CoordinatorEntity, ClimateEntity):
         return HVACAction.HEATING
 
     @property
-    def preset_mode(self) -> str | None:
-        s: ActualState = self.coordinator.data
-        if s.state in (STATE_GWS_HEATING, STATE_GWS_ONLY):
-            return CLIMATE_PRESET_GWS
-        return None
-
-    @property
     def extra_state_attributes(self) -> dict:
         s: ActualState = self.coordinator.data
-        return {
+        attrs = {
             "power_w": s.power_w,
             "cop": s.cop,
             "flow_l_min": s.flow,
         }
+        if s.state in (STATE_GWS_HEATING, STATE_GWS_ONLY):
+            attrs["preset_mode"] = CLIMATE_PRESET_GWS
+        return attrs
 
     @property
     def device_info(self) -> dict:
