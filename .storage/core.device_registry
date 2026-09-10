@@ -1,0 +1,15 @@
+{
+  "version": 3,
+  "minor_version": 4,
+  "key": "core.device_registry",
+  "data": {
+    "devices": [
+      {"area_id":null,"config_entry_id":"01M263J76H78YWFY55FSEH9KTZ","config_subentry_id":null,"configuration_url":null,"connections":[],"created_at":"2026-09-10T16:49:08.498672+00:00","disabled_by":null,"entry_type":null,"hw_version":null,"id":"9418846200f98585bc49cc1f5f4fbd7b","identifiers":[["temzit","1.2.3.4:333"]],"labels":[],"composite_device_id":null,"composite_primary_config_entry":null,"split_at":null,"manufacturer":"Temzit","model":"Hydromodule","model_id":null,"modified_at":"2026-09-10T16:49:08.498710+00:00","name_by_user":null,"name":"1.2.3.4","has_composite_identifiers":false,"primary_config_entry":"01M263J76H78YWFY55FSEH9KTZ","serial_number":null,"sw_version":null,"via_device_id":null},
+      {"area_id":null,"config_entry_id":"01M263JWE3XZN04BDXRZX7ZE2W","config_subentry_id":null,"configuration_url":null,"connections":[],"created_at":"2026-09-10T16:49:30.359414+00:00","disabled_by":null,"entry_type":null,"hw_version":null,"id":"5721391baab41cda12f56124e6252a2e","identifiers":[["temzit","1.2.3.4:333"]],"labels":[],"composite_device_id":null,"composite_primary_config_entry":null,"split_at":null,"manufacturer":"Temzit","model":"Hydromodule","model_id":null,"modified_at":"2026-09-10T16:49:30.359476+00:00","name_by_user":null,"name":"1.2.3.4","has_composite_identifiers":false,"primary_config_entry":"01M263JWE3XZN04BDXRZX7ZE2W","serial_number":null,"sw_version":null,"via_device_id":null},
+      {"area_id":null,"config_entry_id":"01M263KPV2BPY7MMQQ993Y16NG","config_subentry_id":null,"configuration_url":null,"connections":[],"created_at":"2026-09-10T16:49:57.440996+00:00","disabled_by":null,"entry_type":null,"hw_version":null,"id":"c547040ca30ddbbc60109999b6e943ee","identifiers":[["temzit","1.2.3.4:333"]],"labels":[],"composite_device_id":null,"composite_primary_config_entry":null,"split_at":null,"manufacturer":"Temzit","model":"Hydromodule","model_id":null,"modified_at":"2026-09-10T16:49:57.441044+00:00","name_by_user":null,"name":"1.2.3.4","has_composite_identifiers":false,"primary_config_entry":"01M263KPV2BPY7MMQQ993Y16NG","serial_number":null,"sw_version":null,"via_device_id":null},
+      {"area_id":null,"config_entry_id":"01M263MJ9XQPVGNJ8JMKMJ78PM","config_subentry_id":null,"configuration_url":null,"connections":[],"created_at":"2026-09-10T16:50:25.535446+00:00","disabled_by":null,"entry_type":null,"hw_version":null,"id":"bd60b92833a8615e3d3e9dd24de50602","identifiers":[["temzit","1.2.3.4:333"]],"labels":[],"composite_device_id":null,"composite_primary_config_entry":null,"split_at":null,"manufacturer":"Temzit","model":"Hydromodule","model_id":null,"modified_at":"2026-09-10T16:50:25.535494+00:00","name_by_user":null,"name":"1.2.3.4","has_composite_identifiers":false,"primary_config_entry":"01M263MJ9XQPVGNJ8JMKMJ78PM","serial_number":null,"sw_version":null,"via_device_id":null}
+    ],
+    "child_devices": [],
+    "deleted_devices": []
+  }
+}

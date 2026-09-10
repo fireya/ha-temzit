@@ -53,7 +53,7 @@ class TemzitWaterHeater(CoordinatorEntity, WaterHeaterEntity):
     _attr_min_temp = 0.0
     _attr_max_temp = 75.0
     _attr_target_temperature_step = 1.0
-    _attr_precision = 1.0
+    _attr_precision = 0.1
     _attr_temperature_unit = "°C"
 
     def __init__(self, coordinator, unique_id: str, entry: ConfigEntry) -> None:
@@ -63,11 +63,11 @@ class TemzitWaterHeater(CoordinatorEntity, WaterHeaterEntity):
 
     @property
     def current_temperature(self) -> float:
-        return self.coordinator.data.t_gws
+        return round(self.coordinator.data.t_gws, 1)
 
     @property
     def target_temperature(self) -> float:
-        return float(self.coordinator.data.sch_t_gws)
+        return round(float(self.coordinator.data.sch_t_gws), 1)
 
     @property
     def current_operation(self) -> str:

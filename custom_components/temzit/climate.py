@@ -56,7 +56,7 @@ class TemzitClimate(CoordinatorEntity, ClimateEntity):
     _attr_min_temp = 0.0
     _attr_max_temp = 50.0
     _attr_target_temperature_step = 1.0
-    _attr_precision = 1.0
+    _attr_precision = 0.1
     _attr_temperature_unit = "°C"
 
     def __init__(self, coordinator, unique_id: str, entry: ConfigEntry) -> None:
@@ -66,11 +66,11 @@ class TemzitClimate(CoordinatorEntity, ClimateEntity):
 
     @property
     def current_temperature(self) -> float:
-        return self.coordinator.data.t_return
+        return round(self.coordinator.data.t_return, 1)
 
     @property
     def target_temperature(self) -> float:
-        return float(self.coordinator.data.sch_t_water)
+        return round(float(self.coordinator.data.sch_t_water), 1)
 
     @property
     def hvac_mode(self) -> HVACMode:
