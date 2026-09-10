@@ -8,6 +8,9 @@ CONF_HOST = "host"
 CONF_PORT = "port"
 DEFAULT_PORT = 333
 SCAN_INTERVAL_SECONDS = 15
+# Retry policy on poll failure (protocol: retry at 10-30s intervals, >=10s apart).
+MAX_RETRIES = 5
+RETRY_DELAY_SECONDS = 15
 
 PLATFORMS = ["sensor", "binary_sensor", "time"]
 

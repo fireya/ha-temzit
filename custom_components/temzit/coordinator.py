@@ -2,15 +2,16 @@
 
 from __future__ import annotations
 
-from datetime import timedelta
+import asyncio
 import logging
+from datetime import timedelta
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .client import ActualState, TemzitClient, TemzitError
-from .const import DOMAIN, SCAN_INTERVAL_SECONDS
+from .const import DOMAIN, MAX_RETRIES, RETRY_DELAY_SECONDS, SCAN_INTERVAL_SECONDS
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -31,7 +32,20 @@ class TemzitCoordinator(DataUpdateCoordinator[ActualState]):
         self.client = client
 
     async def _async_update_data(self) -> ActualState:
-        try:
-            return await self.client.get_actual_state()
-        except TemzitError as err:
-            raise UpdateFailed(f"Polling Temzit failed: {err}") from err
+        last_err: TemzitError | None = None
+        for attempt in range(1, MAX_RETRIES + 1):
+            try:
+                return await self.client.get_actual_state()
+            except TemzitError as err:
+                last_err = err
+                _LOGGER.warning(
+                    "Temzit poll failed (attempt %d/%d): %s",
+                    attempt,
+                    MAX_RETRIES,
+                    err,
+                )
+                if attempt < MAX_RETRIES:
+                    await asyncio.sleep(RETRY_DELAY_SECONDS)
+        raise UpdateFailed(
+            f"Temzit unavailable after {MAX_RETRIES} attempts: {last_err}"
+        ) from last_err
