@@ -40,6 +40,7 @@ class TemzitSensor(SensorEntityDescription):
 
     getter: Callable[[ActualState], Any] | None = None
     enum_map: dict[int, str] | None = None
+    suggested_display_precision: int | None = None
 
 
 def _fw(state: ActualState) -> str:
@@ -55,6 +56,7 @@ def _ten(state: ActualState) -> float | None:
 
 
 MEAS = SensorStateClass.MEASUREMENT
+PREC1 = 1
 
 SENSORS: tuple[TemzitSensor, ...] = (
     TemzitSensor(
@@ -64,6 +66,7 @@ SENSORS: tuple[TemzitSensor, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=MEAS,
         getter=attrgetter("t_outdoor"),
+        suggested_display_precision=PREC1,
     ),
     TemzitSensor(
         key="t_home",
@@ -72,6 +75,7 @@ SENSORS: tuple[TemzitSensor, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=MEAS,
         getter=attrgetter("t_home"),
+        suggested_display_precision=PREC1,
     ),
     TemzitSensor(
         key="t_supply",
@@ -80,6 +84,7 @@ SENSORS: tuple[TemzitSensor, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=MEAS,
         getter=attrgetter("t_supply"),
+        suggested_display_precision=PREC1,
     ),
     TemzitSensor(
         key="t_return",
@@ -88,6 +93,7 @@ SENSORS: tuple[TemzitSensor, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=MEAS,
         getter=attrgetter("t_return"),
+        suggested_display_precision=PREC1,
     ),
     TemzitSensor(
         key="t_freon_gas",
@@ -96,6 +102,7 @@ SENSORS: tuple[TemzitSensor, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=MEAS,
         getter=attrgetter("t_freon_gas"),
+        suggested_display_precision=PREC1,
     ),
     TemzitSensor(
         key="t_freon_liquid",
@@ -104,6 +111,7 @@ SENSORS: tuple[TemzitSensor, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=MEAS,
         getter=attrgetter("t_freon_liquid"),
+        suggested_display_precision=PREC1,
     ),
     TemzitSensor(
         key="t_gws",
@@ -112,6 +120,7 @@ SENSORS: tuple[TemzitSensor, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=MEAS,
         getter=attrgetter("t_gws"),
+        suggested_display_precision=PREC1,
     ),
     TemzitSensor(
         key="flow",
@@ -175,6 +184,7 @@ SENSORS: tuple[TemzitSensor, ...] = (
         native_unit_of_measurement=C,
         device_class=SensorDeviceClass.TEMPERATURE,
         getter=attrgetter("sch_t_home"),
+        suggested_display_precision=PREC1,
     ),
     TemzitSensor(
         key="sch_t_water",
@@ -182,6 +192,7 @@ SENSORS: tuple[TemzitSensor, ...] = (
         native_unit_of_measurement=C,
         device_class=SensorDeviceClass.TEMPERATURE,
         getter=attrgetter("sch_t_water"),
+        suggested_display_precision=PREC1,
     ),
     TemzitSensor(
         key="sch_t_gws",
@@ -189,6 +200,7 @@ SENSORS: tuple[TemzitSensor, ...] = (
         native_unit_of_measurement=C,
         device_class=SensorDeviceClass.TEMPERATURE,
         getter=attrgetter("sch_t_gws"),
+        suggested_display_precision=PREC1,
     ),
     TemzitSensor(
         key="sch_kkb_limit",
@@ -262,6 +274,8 @@ class TemzitSensorEntity(CoordinatorEntity, SensorEntity):
         self._attr_native_unit_of_measurement = desc.native_unit_of_measurement
         self._attr_device_class = desc.device_class
         self._attr_state_class = desc.state_class
+        if desc.suggested_display_precision is not None:
+            self._attr_suggested_display_precision = desc.suggested_display_precision
 
     @property
     def native_value(self) -> Any:
