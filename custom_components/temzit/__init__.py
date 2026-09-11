@@ -15,6 +15,7 @@ from .config_flow import TemzitConfigFlow  # noqa: F401
 from .const import (
     CONF_HOST,
     CONF_PORT,
+    DATA_COORDINATOR,
     DEFAULT_PORT,
     DOMAIN,
     MIN_CFG_SCAN_INTERVAL,
@@ -36,11 +37,11 @@ SERVICE_SET_INTERVALS_SCHEMA = vol.Schema(
 
 
 def _register_service(hass: HomeAssistant) -> None:
-    if DOMAIN in hass.data and "service_registered" in hass.data[DOMAIN]:
+    if DATA_COORDINATOR in hass.data and "service_registered" in hass.data[DATA_COORDINATOR]:
         return
 
     async def handle_set_intervals(call: ServiceCall) -> None:
-        data = hass.data.get(DOMAIN, {})
+        data = hass.data.get(DATA_COORDINATOR, {})
         scan_interval = call.data.get("scan_interval")
         cfg_scan_interval = call.data.get("cfg_scan_interval")
         for entry_id, coordinator in list(data.items()):
@@ -62,7 +63,7 @@ def _register_service(hass: HomeAssistant) -> None:
         handle_set_intervals,
         schema=SERVICE_SET_INTERVALS_SCHEMA,
     )
-    data = hass.data.setdefault(DOMAIN, {})
+    data = hass.data.setdefault(DATA_COORDINATOR, {})
     data["service_registered"] = True
 
 
@@ -80,8 +81,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     except Exception:
         pass
 
-    hass.data.setdefault(DOMAIN, {})[entry.entry_id] = coordinator
-    hass.data[DOMAIN]["config"] = config_coordinator
+    hass.data.setdefault(DATA_COORDINATOR, {})[entry.entry_id] = coordinator
+    hass.data[DATA_COORDINATOR]["config"] = config_coordinator
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True
@@ -91,7 +92,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a Temzit config entry."""
     ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
     if ok:
-        data = hass.data.get(DOMAIN, {})
+        data = hass.data.get(DATA_COORDINATOR, {})
         data.pop(entry.entry_id, None)
     return ok
 

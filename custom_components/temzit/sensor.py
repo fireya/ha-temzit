@@ -21,6 +21,7 @@ from .client import ActualState, DeviceConfig
 from .const import (
     CONF_HOST,
     CONF_PORT,
+    DATA_COORDINATOR,
     DEFAULT_PORT,
     DOMAIN,
     GWS_MODE_NAMES,
@@ -254,8 +255,8 @@ async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
     """Set up the Temzit sensors."""
-    coordinator = hass.data[DOMAIN][entry.entry_id]
-    config_coordinator = hass.data[DOMAIN].get("config")
+    coordinator = hass.data[DATA_COORDINATOR][entry.entry_id]
+    config_coordinator = hass.data[DATA_COORDINATOR].get("config")
     host = entry.data[CONF_HOST]
     entities: list[TemzitSensorEntity] = []
     for desc in SENSORS:

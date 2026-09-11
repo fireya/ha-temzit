@@ -15,6 +15,7 @@ from .client import ActualState
 from .const import (
     CONF_HOST,
     CONF_PORT,
+    DATA_COORDINATOR,
     DEFAULT_PORT,
     DOMAIN,
     MANUFACTURER,
@@ -38,7 +39,7 @@ async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
     """Set up the Temzit water heater entity."""
-    coordinator = hass.data[DOMAIN][entry.entry_id]
+    coordinator = hass.data[DATA_COORDINATOR][entry.entry_id]
     host = entry.data[CONF_HOST]
     async_add_entities([TemzitWaterHeater(coordinator, f"{host}:water_heater", entry)])
 

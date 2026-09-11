@@ -1,8 +1,17 @@
 """Constants for the Temzit hydromodule integration."""
 
+from __future__ import annotations
+
+from typing import Any
+
+from homeassistant.util.hass_dict import HassKey
+
 DOMAIN = "temzit"
 MANUFACTURER = "Temzit"
 MODEL = "Hydromodule"
+
+# hass.data keys.
+DATA_COORDINATOR: HassKey[dict[str, Any]] = HassKey(DOMAIN)
 
 CONF_HOST = "host"
 CONF_PORT = "port"

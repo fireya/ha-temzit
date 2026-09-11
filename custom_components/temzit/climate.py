@@ -18,6 +18,7 @@ from .const import (
     CLIMATE_PRESET_GWS,
     CONF_HOST,
     CONF_PORT,
+    DATA_COORDINATOR,
     DEFAULT_PORT,
     DOMAIN,
     MANUFACTURER,
@@ -37,8 +38,8 @@ async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
     """Set up the Temzit climate entity."""
-    coordinator = hass.data[DOMAIN][entry.entry_id]
-    config_coordinator = hass.data[DOMAIN].get("config")
+    coordinator = hass.data[DATA_COORDINATOR][entry.entry_id]
+    config_coordinator = hass.data[DATA_COORDINATOR].get("config")
     host = entry.data[CONF_HOST]
     async_add_entities([TemzitClimate(coordinator, config_coordinator, f"{host}:climate", entry)])
 
@@ -46,7 +47,6 @@ async def async_setup_entry(
 class TemzitClimate(CoordinatorEntity, ClimateEntity):
     """Read-only climate entity: the unit's underfloor-heating loop."""
 
-    _attr_name = None
     _attr_has_entity_name = True
     _attr_translation_key = "climate"
     _attr_hvac_modes = [HVACMode.OFF, HVACMode.HEAT, HVACMode.COOL]

@@ -5,5 +5,8 @@ __pycache__/
 venv/
 .DS_Store
 
+# Home Assistant runtime data (never commit)
+.storage/
+
 # local working files (not part of the integration)
 *.apk

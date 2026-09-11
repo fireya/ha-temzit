@@ -16,7 +16,15 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .client import ActualState
-from .const import CONF_HOST, CONF_PORT, DEFAULT_PORT, DOMAIN, MANUFACTURER, MODEL
+from .const import (
+    CONF_HOST,
+    CONF_PORT,
+    DATA_COORDINATOR,
+    DEFAULT_PORT,
+    DOMAIN,
+    MANUFACTURER,
+    MODEL,
+)
 
 
 @dataclass(frozen=True)
@@ -48,7 +56,7 @@ async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
     """Set up the Temzit binary sensors."""
-    coordinator = hass.data[DOMAIN][entry.entry_id]
+    coordinator = hass.data[DATA_COORDINATOR][entry.entry_id]
     host = entry.data[CONF_HOST]
     async_add_entities(
         TemzitBinarySensorEntity(coordinator, desc, f"{host}:{desc.key}", entry)

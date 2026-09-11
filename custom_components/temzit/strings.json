@@ -65,7 +65,9 @@
         }
       },
       "output_power": { "name": "Output power" },
-      "cop": { "name": "COP" }
+      "cop": { "name": "COP" },
+      "target_water": { "name": "Target return temp (weather comp.)" },
+      "weather_compensation": { "name": "Weather compensation" }
     },
     "binary_sensor": {
       "ten_state": { "name": "TEN (electric heater)" },
@@ -73,6 +75,36 @@
     },
     "time": {
       "clock": { "name": "Device clock" }
+    },
+    "climate": {
+      "climate": {
+        "name": "Climate-Underfloor heating",
+        "state_attributes": {
+          "hvac_mode": {
+            "state": {
+              "off": "Off",
+              "heat": "Heating",
+              "cool": "Cooling"
+            }
+          },
+          "preset_mode": {
+            "state": {
+              "gws": "Busy with GWS"
+            }
+          }
+        }
+      }
+    },
+    "water_heater": {
+      "water_heater": {
+        "name": "GWS",
+        "state": {
+          "off": "Off",
+          "compressor": "Compressor",
+          "ten": "TEN",
+          "compressor+ten": "Compressor+TEN"
+        }
+      }
     }
   }
 }

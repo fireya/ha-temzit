@@ -1,6 +1,6 @@
 {
   "name": "Temzit Hydromodule",
-  "render_readme": false,
+  "render_readme": true,
   "homeassistant": "2024.1.0",
-  "domains": ["sensor", "binary_sensor", "time"]
+  "domains": ["sensor", "binary_sensor", "time", "climate", "water_heater"]
 }
